@@ -254,18 +254,8 @@ def split_extrand(s, gid_dict, celltype, exttype):
 def hist_bin_opt(x, N_trials):
   """ Shimazaki and Shinomoto, Neural Comput, 2007
   """
-  # find range of bin-widths that envelopes 90% of the spike pairs
-  x.sort()
-  x_diffs = sorted(np.diff(np.asarray(x)))
-  binW_min = x_diffs[(np.ceil(0.9*(x.size-1))-1).astype(int)]
-  binW_max = x_diffs[-1]
-  # assign range of bin numbers to check
-  binN_min = int(round((x[-1]-x[0]) / binW_max))
-  binN_max = int(round((x[-1]-x[0]) / binW_min))
-  bin_checks = np.arange(binN_min, binN_max, int(round((binN_max-binN_min)/50)))
-  # bin_checks = np.arange(80, 300, 10)
+  bin_checks = np.arange(80, 300, 10)
   # bin_checks = np.linspace(150, 300, 16)
-  # check bins and minimize cost
   costs = np.zeros(len(bin_checks))
   i = 0
   # this might be vectorizable in np
@@ -280,7 +270,7 @@ def hist_bin_opt(x, N_trials):
     kbar = np.mean(pdf)
     kvar = np.var(pdf)
     # calc cost
-    costs[i] = (2*kbar - kvar) / (N_trials * w_bin)**2.
+    costs[i] = (2.*kbar - kvar) / (N_trials * w_bin)**2.
     i += 1
   # find the bin size corresponding to a minimization of the costs
   bin_opt_list = bin_checks[costs.min() == costs]
